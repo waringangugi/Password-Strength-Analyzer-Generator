@@ -8,6 +8,9 @@ A Python tool that analyzes password strength based on security best practices a
   - Character complexity (uppercase, lowercase, digits, special characters)
   - Entropy calculation using zxcvbn library
   - Estimated crack time for offline attacks
+- Cryptographically secure password generation
+  - Customizable length
+  - Uses Python's secrets module for true randomness
 
 ## Installation
 
@@ -63,6 +66,22 @@ Length: 16
 Strength: Strong
 Estimated crack time: centuries
 ```
+
+## Usage
+
+### Analyze a Password
+Run the password analyzer:
+```bash
+python src/analyzer.py
+```
+
+### Generate Secure Passwords
+Run the password generator:
+```bash
+python src/generator.py
+```
+
+Enter desired length and quantity when prompted.
 
 ## Security Concepts Demonstrated
 - **Password Complexity**: Checking for multiple character types (uppercase, lowercase, digits, symbols)
