@@ -8,6 +8,9 @@ A Python tool that analyzes password strength based on security best practices a
   - Character complexity (uppercase, lowercase, digits, special characters)
   - Entropy calculation using zxcvbn library
   - Estimated crack time for offline attacks
+- **Data breach detection via HaveIBeenPwned API**
+  - Checks password against 600+ million breached passwords
+  - Privacy-preserving k-anonymity implementation (only sends partial hash)
 - Cryptographically secure password generation
   - Customizable length
   - Uses Python's secrets module for true randomness
@@ -87,6 +90,8 @@ Enter desired length and quantity when prompted.
 - **Password Complexity**: Checking for multiple character types (uppercase, lowercase, digits, symbols)
 - **Entropy Analysis**: Using industry-standard zxcvbn library to calculate password unpredictability
 - **Crack Time Estimation**: Understanding real-world attack scenarios
+- **K-Anonymity**: Privacy-preserving API integration with HaveIBeenPwned (only partial hash transmitted)
+- **Threat Intelligence**: Integration with real-world breach databases
 
 
 ## Technologies Used
