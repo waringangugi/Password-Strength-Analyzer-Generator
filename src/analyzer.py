@@ -1,4 +1,6 @@
 import re
+import hashlib
+import requests
 from zxcvbn import zxcvbn
 
 def analyze_password(password):
@@ -49,6 +51,36 @@ def get_strength_label(score):
     else:
         return "Strong"
 
+def check_pwned_password(password):
+    """Check if password has been in a data breach using HaveIBeenPwned API"""
+    
+    # Hash the password with SHA-1
+    sha1_password = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+    
+    # Split into first 5 chars and rest
+    first5, tail = sha1_password[:5], sha1_password[5:]
+    
+    # Query the API with first 5 characters
+    url = f'https://api.pwnedpasswords.com/range/{first5}'
+    
+    try:
+        response = requests.get(url)
+        
+        if response.status_code != 200:
+            return None, "Could not check breach database"
+        
+        # Check if our hash suffix appears in the response
+        hashes = (line.split(':') for line in response.text.splitlines())
+        
+        for hash_suffix, count in hashes:
+            if hash_suffix == tail:
+                return True, int(count)
+        
+        return False, 0
+        
+    except requests.RequestException:
+        return None, "Error connecting to breach database"
+
 # Test it
 if __name__ == "__main__":
     test_password = input("Enter a password to test: ")
@@ -59,3 +91,13 @@ if __name__ == "__main__":
     print(f"Length: {results['length']}")
     print(f"Strength: {strength}")
     print(f"Estimated crack time: {results['crack_time']}")
+    
+    # Check if password has been breached
+    is_pwned, count = check_pwned_password(test_password)
+    
+    if is_pwned is None:
+        print(f"Breach check: {count}")
+    elif is_pwned:
+        print(f"WARNING: This password has been found in {count:,} data breaches!")
+    else:
+        print("✓ This password has not been found in known data breaches")
