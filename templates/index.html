@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Security Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .strength {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .strength.weak {
+            color: #e74c3c;
+        }
+        
+        .strength.medium {
+            color: #f39c12;
+        }
+        
+        .strength.strong {
+            color: #27ae60;
+        }
+        
+        .breach-warning {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .breach-safe {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .detail-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkmark {
+            color: #27ae60;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .xmark {
+            color: #e74c3c;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .generated-password {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            word-break: break-all;
+            margin-top: 15px;
+            border: 2px solid #667eea;
+        }
+        
+        .flex-controls {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .flex-controls > div {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Password Security Tool</h1>
+        <p class="subtitle">Analyze password strength and generate secure passwords</p>
+        
+        <!-- Password Analyzer Section -->
+        <div class="section">
+            <h2>Analyze Password</h2>
+            <input type="password" id="passwordInput" placeholder="Enter password to analyze">
+            <button onclick="analyzePassword()">Analyze Password</button>
+            
+            <div id="analysisResults" class="results">
+                <div class="strength" id="strengthLabel"></div>
+                <div class="detail-item">
+                    <span>Length: <strong id="length"></strong></span>
+                </div>
+                <div class="detail-item">
+                    <span>Crack Time: <strong id="crackTime"></strong></span>
+                </div>
+                <div class="detail-item" id="uppercaseCheck"></div>
+                <div class="detail-item" id="lowercaseCheck"></div>
+                <div class="detail-item" id="digitsCheck"></div>
+                <div class="detail-item" id="specialCheck"></div>
+                <div id="breachStatus"></div>
+            </div>
+        </div>
+        
+        <!-- Password Generator Section -->
+        <div class="section">
+            <h2>Generate Password</h2>
+            <div class="flex-controls">
+                <div>
+                    <label for="lengthInput">Password Length</label>
+                    <input type="number" id="lengthInput" value="16" min="8" max="128">
+                </div>
+                <button onclick="generatePassword()">Generate Password</button>
+            </div>
+            
+            <div id="generatedPassword" class="results"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function analyzePassword() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+                
+                const data = await response.json();
+                
+                // Show results
+                document.getElementById('analysisResults').classList.add('show');
+                
+                // Strength label
+                const strengthLabel = document.getElementById('strengthLabel');
+                strengthLabel.textContent = `Strength: ${data.strength}`;
+                strengthLabel.className = 'strength ' + data.strength.toLowerCase();
+                
+                // Details
+                document.getElementById('length').textContent = data.length + ' characters';
+                document.getElementById('crackTime').textContent = data.crack_time;
+                
+                // Character checks
+                document.getElementById('uppercaseCheck').innerHTML = 
+                    (data.has_uppercase ? '<span class="checkmark">✓</span>' : '<span class="xmark">✗</span>') + 
+                    'Contains uppercase letters';
+                    
+                document.getElementById('lowercaseCheck').innerHTML = 
+                    (data.has_lowercase ? '<span class="checkmark">✓</span>' : '<span class="xmark">✗</span>') + 
+                    'Contains lowercase letters';
+                    
+                document.getElementById('digitsCheck').innerHTML = 
+                    (data.has_digits ? '<span class="checkmark">✓</span>' : '<span class="xmark">✗</span>') + 
+                    'Contains digits';
+                    
+                document.getElementById('specialCheck').innerHTML = 
+                    (data.has_special ? '<span class="checkmark">✓</span>' : '<span class="xmark">✗</span>') + 
+                    'Contains special characters';
+                
+                // Breach status
+                const breachStatus = document.getElementById('breachStatus');
+                if (data.is_breached) {
+                    breachStatus.className = 'breach-warning';
+                    breachStatus.textContent = `⚠️ WARNING: This password has been found in ${data.breach_count.toLocaleString()} data breaches!`;
+                } else {
+                    breachStatus.className = 'breach-safe';
+                    breachStatus.textContent = '✓ This password has not been found in known data breaches';
+                }
+                
+            } catch (error) {
+                alert('Error analyzing password: ' + error.message);
+            }
+        }
+        
+        async function generatePassword() {
+            const length = document.getElementById('lengthInput').value;
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ length: parseInt(length) })
+                });
+                
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('generatedPassword');
+                resultDiv.classList.add('show');
+                resultDiv.innerHTML = `
+                    <div class="generated-password">
+                        ${data.password}
+                    </div>
+                `;
+                
+            } catch (error) {
+                alert('Error generating password: ' + error.message);
+            }
+        }
+        
+        // Allow Enter key to trigger analysis
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzePassword();
+            }
+        });
+    </script>
+</body>
+</html>
