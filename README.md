@@ -5,7 +5,6 @@ A full-stack web application that analyzes password strength based on security b
 ## Live Demo
 **[Try it here: https://your-app-name.onrender.com](https://your-app-name.onrender.com)**
 
-> Note: Replace with your actual Render URL after deployment
 
 ## Features
 - **Password Strength Analysis**
@@ -179,6 +178,5 @@ To deploy your own instance:
 
 
 ## Author
-**Your Name**
+**Waringa Ngugi**
 - GitHub: [@waringangugi](https://github.com/waringangugi)
-- Project Link: [https://github.com/waringangugi/Password-Strength-Analyzer-Generator](https://github.com/waringangugi/Password-Strength-Analyzer-Generator)
