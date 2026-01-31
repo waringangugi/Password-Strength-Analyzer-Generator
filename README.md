@@ -69,6 +69,16 @@ Strength: Medium
 Estimated crack time: 2 hours
 ⚠️  WARNING: This password has been found in 2,384,028 data breaches!
 ```
+
+```
+Enter a password to test: Waringa&Ev3
+Password Analysis:
+Length: 11
+Strength: Strong
+Estimated crack time: 1 day
+✓ This password has not been found in known data breaches
+```
+
 ```
 Enter a password to test: MyS3cur3P@ssw0rd!
 Password Analysis:
