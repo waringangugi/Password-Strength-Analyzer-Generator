@@ -3,7 +3,7 @@
 A full-stack web application that analyzes password strength based on security best practices and generates cryptographically secure passwords. Built with Python Flask and deployed on Render.
 
 ## Live Demo
-**[Try it here: https://your-app-name.onrender.com](https://your-app-name.onrender.com)**
+**[Try it here: https://password-strength-analyzer-generator.onrender.com/](https://password-strength-analyzer-generator.onrender.com/)**
 
 
 ## Features
@@ -25,7 +25,7 @@ A full-stack web application that analyzes password strength based on security b
 ## Usage
 
 ### Web Interface (Recommended)
-Simply visit the [live demo](https://your-app-name.onrender.com) and:
+Simply visit the [live demo](https://password-strength-analyzer-generator.onrender.com/) and:
 1. Enter a password to analyze its strength and check for breaches
 2. Or generate a secure password with your desired length
 
